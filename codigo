@@ -1,0 +1,70 @@
+import re
+
+sql_to_usql = {
+    "SELECT": "TRAEME",
+    "*": "TODO",
+    "FROM": "DE LA TABLA",
+    "WHERE": "DONDE",
+    "GROUP BY": "AGRUPANDO POR",
+    "JOIN": "MEZCLANDO",
+    "ON": "EN",
+    "DISTINCT": "LOS DISTINTOS",
+    "COUNT": "CONTANDO",
+    "INSERT INTO": "METE EN",
+    "VALUES": "LOS VALORES",
+    "UPDATE": "ACTUALIZA",
+    "SET": "SETEA",
+    "DELETE FROM": "BORRA DE LA",
+    "ORDER BY": "ORDENA POR",
+    "LIMIT": "COMO MUCHO",
+    "HAVING": "WHERE DEL GROUP BY",
+    "EXISTS": "EXISTE",
+    "IN": "EN ESTO:",
+    "BETWEEN": "ENTRE",
+    "LIKE": "PARECIDO A",
+    "IS NULL": "ES NULO",
+    "ALTER TABLE": "CAMBIA LA TABLA",
+    "ADD COLUMN": "AGREGA LA COLUMNA",
+    "DROP COLUMN": "ELIMINA LA COLUMNA",
+    "CREATE TABLE": "CREA LA TABLA",
+    "DROP TABLE": "TIRA LA TABLA",
+    "DEFAULT": "POR DEFECTO",
+    "UNIQUE": "UNICO",
+    "PRIMARY KEY": "CLAVE PRIMA",
+    "FOREIGN KEY": "CLAVE REFERENTE",
+    "NOT NULL": "NO NULO",
+    "CAST": "TRANSFORMA A"
+}
+
+# Palabras clave que deberían estar en el diccionario
+keywords = set(sql_to_usql.keys())
+
+# Función para dividir la consulta en tokens
+def tokenize_query(query):
+    return re.findall(r"[\w']+|[.,()<>=*]", query)
+
+# Función que traduce de SQL a USQL
+def sql_to_usql_translate(query):
+    tokens = tokenize_query(query)  # Dividir la consulta en tokens
+    translated_tokens = []  # Lista para guardar la traducción
+    
+    # Recorremos cada token
+    for token in tokens:
+        # Si el token es una palabra clave SQL que debería traducirse
+        if token in sql_to_usql:
+            translated_tokens.append(sql_to_usql[token])  # Traducir el token
+        elif token.upper() in keywords:  # Si el token debería estar pero no está en el diccionario
+            print(f"Advertencia: Token no reconocido '{token}'")  # Mostrar advertencia
+        else:
+            translated_tokens.append(token)  # Si no, lo dejamos igual
+    
+    # Reconstruimos la consulta traducida
+    translated_query = ' '.join(translated_tokens)
+    return translated_query
+
+# Ejemplo de uso
+sql_query = "SELECT DISTINCT nombre FROM clientes WHERE ciudad = 'Madrid' ORDER BY edad LIMIT 10"
+usql_query = sql_to_usql_translate(sql_query)
+print(usql_query)
+
+
